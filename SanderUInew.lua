@@ -13,7 +13,7 @@ local OrionLib = {
 	Themes = {
 		Default = {
 			Main = Color3.fromRGB(255, 255, 255),
-			Second = Color3.fromRGB(0, 0, 0),
+			Second = Color3.fromRGB(255, 255, 255,
 			Stroke = Color3.fromRGB(60, 60, 60),
 			Divider = Color3.fromRGB(60, 60, 60),
 			Text = Color3.fromRGB(192, 192, 192),
@@ -469,7 +469,7 @@ function OrionLib:MakeWindow(WindowConfig)
 	local UIHidden = false
 
 	WindowConfig = WindowConfig or {}
-	WindowConfig.Name = WindowConfig.Name or "Orion Library"
+	WindowConfig.Name = WindowConfig.Name or "Sander UI"
 	WindowConfig.ConfigFolder = WindowConfig.ConfigFolder or WindowConfig.Name
 	WindowConfig.SaveConfig = WindowConfig.SaveConfig or false
 	WindowConfig.HidePremium = WindowConfig.HidePremium or false
