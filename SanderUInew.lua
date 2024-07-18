@@ -12,12 +12,12 @@ local OrionLib = {
 	Flags = {},
 	Themes = {
 		Default = {
-			Main = Color3.fromRGB(255, 255, 255),
+			Main = Color3.fromRGB(0, 0, 0),
 			Second = Color3.fromRGB(0, 0, 0),
-			Stroke = Color3.fromRGB(27, 27, 27),
-			Divider = Color3.fromRGB(9, 9, 9),
-			Text = Color3.fromRGB(28, 25, 25),
-			TextDark = Color3.fromRGB(150, 150, 150)
+			Stroke = Color3.fromRGB(255, 0, 0),
+			Divider = Color3.fromRGB(60, 60, 60),
+			Text = Color3.fromRGB(0, 255, 251),
+			TextDark = Color3.fromRGB(50, 217, 231)
 		}
 	},
 	SelectedTheme = "Default",
@@ -99,7 +99,7 @@ local function MakeDraggable(DragPoint, Main)
 	pcall(function()
 		local Dragging, DragInput, MousePos, FramePos = false
 		AddConnection(DragPoint.InputBegan, function(Input)
-			if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
+			if Input.UserInputType == Enum.UserInputType.MouseButton1 then
 				Dragging = true
 				MousePos = Input.Position
 				FramePos = Main.Position
@@ -112,14 +112,14 @@ local function MakeDraggable(DragPoint, Main)
 			end
 		end)
 		AddConnection(DragPoint.InputChanged, function(Input)
-			if Input.UserInputType == Enum.UserInputType.MouseMovement or Input.UserInputType == Enum.UserInputType.Touch then
+			if Input.UserInputType == Enum.UserInputType.MouseMovement then
 				DragInput = Input
 			end
 		end)
 		AddConnection(UserInputService.InputChanged, function(Input)
 			if Input == DragInput and Dragging then
 				local Delta = Input.Position - MousePos
-				TweenService:Create(Main, TweenInfo.new(0.05, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {Position  = UDim2.new(FramePos.X.Scale,FramePos.X.Offset + Delta.X, FramePos.Y.Scale, FramePos.Y.Offset + Delta.Y)}):Play()
+				--TweenService:Create(Main, TweenInfo.new(0.05, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {Position  = UDim2.new(FramePos.X.Scale,FramePos.X.Offset + Delta.X, FramePos.Y.Scale, FramePos.Y.Offset + Delta.Y)}):Play()
 				Main.Position  = UDim2.new(FramePos.X.Scale,FramePos.X.Offset + Delta.X, FramePos.Y.Scale, FramePos.Y.Offset + Delta.Y)
 			end
 		end)
@@ -242,7 +242,7 @@ local function SaveCfg(Name)
 	writefile(OrionLib.Folder .. "/" .. Name .. ".txt", tostring(HttpService:JSONEncode(Data)))
 end
 
-local WhitelistedMouse = {Enum.UserInputType.MouseButton1, Enum.UserInputType.MouseButton2,Enum.UserInputType.MouseButton3,Enum.UserInputType.Touch}
+local WhitelistedMouse = {Enum.UserInputType.MouseButton1, Enum.UserInputType.MouseButton2,Enum.UserInputType.MouseButton3}
 local BlacklistedKeys = {Enum.KeyCode.Unknown,Enum.KeyCode.W,Enum.KeyCode.A,Enum.KeyCode.S,Enum.KeyCode.D,Enum.KeyCode.Up,Enum.KeyCode.Left,Enum.KeyCode.Down,Enum.KeyCode.Right,Enum.KeyCode.Slash,Enum.KeyCode.Tab,Enum.KeyCode.Backspace,Enum.KeyCode.Escape}
 
 local function CheckKey(Table, Key)
@@ -364,7 +364,7 @@ CreateElement("Label", function(Text, TextSize, Transparency)
 		TextColor3 = Color3.fromRGB(240, 240, 240),
 		TextTransparency = Transparency or 0,
 		TextSize = TextSize or 15,
-		Font = Enum.Font.Roboto,
+		Font = Enum.Font.Gotham,
 		RichText = true,
 		BackgroundTransparency = 1,
 		TextXAlignment = Enum.TextXAlignment.Left
@@ -602,7 +602,7 @@ function OrionLib:MakeWindow(WindowConfig)
 		Parent = Orion,
 		Position = UDim2.new(0.5, -307, 0.5, -172),
 		Size = UDim2.new(0, 615, 0, 344),
-		BackgroundTransparency = 0.3
+		ClipsDescendants = true
 	}), {
 		--SetProps(MakeElement("Image", "rbxassetid://3523728077"), {
 		--	AnchorPoint = Vector2.new(0.5, 0.5),
@@ -1053,19 +1053,19 @@ function OrionLib:MakeWindow(WindowConfig)
 				}), "Second")
 
 				SliderBar.InputBegan:Connect(function(Input)
-					if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then 
+					if Input.UserInputType == Enum.UserInputType.MouseButton1 then 
 						Dragging = true 
 					end 
 				end)
 				SliderBar.InputEnded:Connect(function(Input) 
-					if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then 
+					if Input.UserInputType == Enum.UserInputType.MouseButton1 then 
 						Dragging = false 
 					end 
 				end)
 
 				UserInputService.InputChanged:Connect(function(Input)
-					if Dragging then 
-						local SizeScale = math.clamp((Mouse.X - SliderBar.AbsolutePosition.X) / SliderBar.AbsoluteSize.X, 0, 1)
+					if Dragging and Input.UserInputType == Enum.UserInputType.MouseMovement then 
+						local SizeScale = math.clamp((Input.Position.X - SliderBar.AbsolutePosition.X) / SliderBar.AbsoluteSize.X, 0, 1)
 						Slider:Set(SliderConfig.Min + ((SliderConfig.Max - SliderConfig.Min) * SizeScale)) 
 						SaveCfg(game.GameId)
 					end
@@ -1290,7 +1290,7 @@ function OrionLib:MakeWindow(WindowConfig)
 				end)
 
 				AddConnection(Click.InputEnded, function(Input)
-					if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
+					if Input.UserInputType == Enum.UserInputType.MouseButton1 then
 						if Bind.Binding then return end
 						Bind.Binding = true
 						BindBox.Value.Text = ""
@@ -1566,7 +1566,7 @@ function OrionLib:MakeWindow(WindowConfig)
 				ColorV = 1 - (math.clamp(ColorSelection.AbsolutePosition.Y - Color.AbsolutePosition.Y, 0, Color.AbsoluteSize.Y) / Color.AbsoluteSize.Y)
 
 				AddConnection(Color.InputBegan, function(input)
-					if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+					if input.UserInputType == Enum.UserInputType.MouseButton1 then
 						if ColorInput then
 							ColorInput:Disconnect()
 						end
@@ -1582,7 +1582,7 @@ function OrionLib:MakeWindow(WindowConfig)
 				end)
 
 				AddConnection(Color.InputEnded, function(input)
-					if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+					if input.UserInputType == Enum.UserInputType.MouseButton1 then
 						if ColorInput then
 							ColorInput:Disconnect()
 						end
@@ -1590,7 +1590,7 @@ function OrionLib:MakeWindow(WindowConfig)
 				end)
 
 				AddConnection(Hue.InputBegan, function(input)
-					if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+					if input.UserInputType == Enum.UserInputType.MouseButton1 then
 						if HueInput then
 							HueInput:Disconnect()
 						end;
@@ -1607,7 +1607,7 @@ function OrionLib:MakeWindow(WindowConfig)
 				end)
 
 				AddConnection(Hue.InputEnded, function(input)
-					if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+					if input.UserInputType == Enum.UserInputType.MouseButton1 then
 						if HueInput then
 							HueInput:Disconnect()
 						end
@@ -1751,6 +1751,8 @@ function OrionLib:MakeWindow(WindowConfig)
 	--		writefile("NewLibraryNotification1.txt","The value for the notification having been sent to you.")
 	--	end
 	--end
+	
+
 	
 	return TabFunction
 end   
